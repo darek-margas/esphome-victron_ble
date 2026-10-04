@@ -12,17 +12,48 @@ static const char *const TAG = "victron_ble.sensor";
 //   ESP_LOGCONFIG(TAG, "  Type '%s'", enum_to_c_str(this->type_));
 // }
 
-// The configured type does not match what the device sends (e.g. AUX_VOLTAGE while the SmartShunt aux input is
-// set to temperature). Victron devices advertise about once a second, so only warn and publish NaN when the
-// sensor goes from valid (or no value yet) to invalid; a later valid value re-arms the warning.
+// Victron devices advertise about once a second. When a sensor has no value to report, only log and publish NaN
+// when it goes from valid (or no value yet) to unavailable; a later valid value re-arms this.
 // Uses the raw (pre-filter) state, as has_state() is not set while filters such as throttle_average hold values back.
-void VictronSensor::publish_invalid_(const char *message) {
+bool VictronSensor::should_report_unavailable_() {
   if (this->invalid_reported_ && std::isnan(this->get_raw_state())) {
-    return;
+    return false;
   }
   this->invalid_reported_ = true;
+  return true;
+}
+
+// The configured type does not exist on this device (e.g. a SmartShunt field on a solar charger).
+void VictronSensor::publish_invalid_(const char *message) {
+  if (!this->should_report_unavailable_()) {
+    return;
+  }
   ESP_LOGW(TAG, "[%s] %s: %s Publishing NaN until this changes.", this->parent_->address_str(),
            this->get_name().c_str(), message);
+  this->publish_state(NAN);
+}
+
+static const char *aux_input_to_str(VE_REG_BMV_AUX_INPUT aux_input) {
+  switch (aux_input) {
+    case VE_REG_BMV_AUX_INPUT::VE_REG_DC_CHANNEL2_VOLTAGE:
+      return "starter battery voltage";
+    case VE_REG_BMV_AUX_INPUT::VE_REG_BATTERY_MID_POINT_VOLTAGE:
+      return "midpoint voltage";
+    case VE_REG_BMV_AUX_INPUT::VE_REG_BAT_TEMPERATURE:
+      return "temperature";
+    default:
+      return "none";
+  }
+}
+
+// AUX_VOLTAGE / MID_VOLTAGE / TEMPERATURE share the device's single aux input. Whichever one the device is set to
+// reports values; the others are simply not in use, which is a normal configuration rather than an error.
+void VictronSensor::publish_aux_not_used_(VE_REG_BMV_AUX_INPUT aux_input) {
+  if (!this->should_report_unavailable_()) {
+    return;
+  }
+  ESP_LOGI(TAG, "[%s] %s: not in use, device aux input is set to %s.", this->parent_->address_str(),
+           this->get_name().c_str(), aux_input_to_str(aux_input));
   this->publish_state(NAN);
 }
 
@@ -150,14 +181,14 @@ void VictronSensor::register_callback() {
             if (msg->data.battery_monitor.aux_input_type == VE_REG_BMV_AUX_INPUT::VE_REG_DC_CHANNEL2_VOLTAGE) {
               this->publish_state_(msg->data.battery_monitor.aux_input.aux_voltage);
             } else {
-              this->publish_invalid_("Incorrect Aux input configuration.");
+              this->publish_aux_not_used_(msg->data.battery_monitor.aux_input_type);
             }
             break;
           case VICTRON_BLE_RECORD_TYPE::DC_ENERGY_METER:
             if (msg->data.dc_energy_meter.aux_input_type == VE_REG_BMV_AUX_INPUT::VE_REG_DC_CHANNEL2_VOLTAGE) {
               this->publish_state_(msg->data.dc_energy_meter.aux_input.aux_voltage);
             } else {
-              this->publish_invalid_("Incorrect Aux input configuration.");
+              this->publish_aux_not_used_(msg->data.dc_energy_meter.aux_input_type);
             }
             break;
           default:
@@ -433,7 +464,7 @@ void VictronSensor::register_callback() {
             if (msg->data.battery_monitor.aux_input_type == VE_REG_BMV_AUX_INPUT::VE_REG_BATTERY_MID_POINT_VOLTAGE) {
               this->publish_state_(msg->data.battery_monitor.aux_input.mid_voltage);
             } else {
-              this->publish_invalid_("Incorrect Aux input configuration.");
+              this->publish_aux_not_used_(msg->data.battery_monitor.aux_input_type);
             }
             break;
           default:
@@ -526,7 +557,7 @@ void VictronSensor::register_callback() {
             if (msg->data.battery_monitor.aux_input_type == VE_REG_BMV_AUX_INPUT::VE_REG_BAT_TEMPERATURE) {
               this->publish_state_(msg->data.battery_monitor.aux_input.temperature);
             } else {
-              this->publish_invalid_("Incorrect Aux input configuration.");
+              this->publish_aux_not_used_(msg->data.battery_monitor.aux_input_type);
             }
             break;
           case VICTRON_BLE_RECORD_TYPE::AC_CHARGER:
@@ -545,7 +576,7 @@ void VictronSensor::register_callback() {
             if (msg->data.dc_energy_meter.aux_input_type == VE_REG_BMV_AUX_INPUT::VE_REG_BAT_TEMPERATURE) {
               this->publish_state_(msg->data.dc_energy_meter.aux_input.temperature);
             } else {
-              this->publish_invalid_("Incorrect Aux input configuration.");
+              this->publish_aux_not_used_(msg->data.dc_energy_meter.aux_input_type);
             }
             break;
           default:

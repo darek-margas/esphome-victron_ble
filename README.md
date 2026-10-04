@@ -248,7 +248,7 @@ The following `type` are supported by the `sensor` component:
 | `BATTERY_VOLTAGE_3`  | V    |               |                 |          |                 |              |             | X          |                       |                  |          |        |                 |          |
 | `BATTERY_POWER_3`    | W    |               |                 |          |                 |              |             | X          |                       |                  |          |        |                 |          |
 
-(1) - Available if device aux port is configured.
+(1) - Available if device aux port is configured. The aux port has one mode at a time; you can configure all three (`AUX_VOLTAGE`, `MID_VOLTAGE`, `TEMPERATURE`) and only the one matching the device setting reports values, the others stay unknown (logged once at INFO).
 (2) - Not available on all models. `NAN` reported if not available.
 
 ### Binary Sensor

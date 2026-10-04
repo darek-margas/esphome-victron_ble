@@ -15,10 +15,12 @@ static const char *const TAG = "victron_ble.sensor";
 // The configured type does not match what the device sends (e.g. AUX_VOLTAGE while the SmartShunt aux input is
 // set to temperature). Victron devices advertise about once a second, so only warn and publish NaN when the
 // sensor goes from valid (or no value yet) to invalid; a later valid value re-arms the warning.
+// Uses the raw (pre-filter) state, as has_state() is not set while filters such as throttle_average hold values back.
 void VictronSensor::publish_invalid_(const char *message) {
-  if (this->has_state() && std::isnan(this->get_raw_state())) {
+  if (this->invalid_reported_ && std::isnan(this->get_raw_state())) {
     return;
   }
+  this->invalid_reported_ = true;
   ESP_LOGW(TAG, "[%s] %s: %s Publishing NaN until this changes.", this->parent_->address_str(),
            this->get_name().c_str(), message);
   this->publish_state(NAN);

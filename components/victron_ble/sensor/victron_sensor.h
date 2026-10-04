@@ -219,6 +219,7 @@ class VictronSensor : public sensor::Sensor, public Parented<VictronBle> {
 
  protected:
   VICTRON_SENSOR_TYPE type_;
+  bool invalid_reported_{false};
 
   void register_callback();
   void publish_invalid_(const char *message);

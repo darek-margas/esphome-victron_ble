@@ -221,6 +221,7 @@ class VictronSensor : public sensor::Sensor, public Parented<VictronBle> {
   VICTRON_SENSOR_TYPE type_;
 
   void register_callback();
+  void publish_invalid_(const char *message);
 
   inline void publish_state_(vic_22bit_0_001 val) {
     if (val == 0x3FFFFF) {

@@ -1,8 +1,6 @@
 #include "victron_listener.h"
 #include "esphome/core/log.h"
 
-#ifdef USE_ESP32
-
 namespace esphome {
 namespace victron_scanner {
 
@@ -52,4 +50,3 @@ bool VictronListener::parse_device(const ble_device_base::ESPBTDevice &device) {
 }  // namespace victron_scanner
 }  // namespace esphome
 
-#endif

@@ -17,10 +17,10 @@ void VictronSensor::register_callback() {
       this->parent_->add_on_message_callback([this](const VictronBleData *msg) {
         switch (msg->record_type) {
           case VICTRON_BLE_RECORD_TYPE::MULTI_RS:
-            this->publish_state((u_int8_t) msg->data.multi_rs.active_ac_in);
+            this->publish_state((uint8_t) msg->data.multi_rs.active_ac_in);
             break;
           case VICTRON_BLE_RECORD_TYPE::VE_BUS:
-            this->publish_state((u_int8_t) msg->data.ve_bus.active_ac_in);
+            this->publish_state((uint8_t) msg->data.ve_bus.active_ac_in);
             break;
           default:
             ESP_LOGW(TAG, "[%s] Device has no `active ac in` field.", this->parent_->address_str());
@@ -116,16 +116,16 @@ void VictronSensor::register_callback() {
       this->parent_->add_on_message_callback([this](const VictronBleData *msg) {
         switch (msg->record_type) {
           case VICTRON_BLE_RECORD_TYPE::BATTERY_MONITOR:
-            this->publish_state((u_int16_t) msg->data.battery_monitor.alarm_reason);
+            this->publish_state((uint16_t) msg->data.battery_monitor.alarm_reason);
             break;
           case VICTRON_BLE_RECORD_TYPE::INVERTER:
-            this->publish_state((u_int16_t) msg->data.inverter.alarm_reason);
+            this->publish_state((uint16_t) msg->data.inverter.alarm_reason);
             break;
           case VICTRON_BLE_RECORD_TYPE::SMART_BATTERY_PROTECT:
-            this->publish_state((u_int16_t) msg->data.smart_battery_protect.alarm_reason);
+            this->publish_state((uint16_t) msg->data.smart_battery_protect.alarm_reason);
             break;
           case VICTRON_BLE_RECORD_TYPE::DC_ENERGY_METER:
-            this->publish_state((u_int16_t) msg->data.dc_energy_meter.alarm_reason);
+            this->publish_state((uint16_t) msg->data.dc_energy_meter.alarm_reason);
             break;
           default:
             ESP_LOGW(TAG, "[%s] Device has no `alarm reason` field.", this->parent_->address_str());
@@ -277,25 +277,25 @@ void VictronSensor::register_callback() {
       this->parent_->add_on_message_callback([this](const VictronBleData *msg) {
         switch (msg->record_type) {
           case VICTRON_BLE_RECORD_TYPE::SOLAR_CHARGER:
-            this->publish_state((u_int8_t) msg->data.solar_charger.charger_error);
+            this->publish_state((uint8_t) msg->data.solar_charger.charger_error);
             break;
           case VICTRON_BLE_RECORD_TYPE::DCDC_CONVERTER:
-            this->publish_state((u_int8_t) msg->data.dcdc_converter.charger_error);
+            this->publish_state((uint8_t) msg->data.dcdc_converter.charger_error);
             break;
           case VICTRON_BLE_RECORD_TYPE::INVERTER_RS:
-            this->publish_state((u_int8_t) msg->data.inverter_rs.charger_error);
+            this->publish_state((uint8_t) msg->data.inverter_rs.charger_error);
             break;
           case VICTRON_BLE_RECORD_TYPE::AC_CHARGER:
-            this->publish_state((u_int8_t) msg->data.ac_charger.charger_error);
+            this->publish_state((uint8_t) msg->data.ac_charger.charger_error);
             break;
           case VICTRON_BLE_RECORD_TYPE::SMART_BATTERY_PROTECT:
-            this->publish_state((u_int8_t) msg->data.smart_battery_protect.error_code);
+            this->publish_state((uint8_t) msg->data.smart_battery_protect.error_code);
             break;
           case VICTRON_BLE_RECORD_TYPE::MULTI_RS:
-            this->publish_state((u_int8_t) msg->data.multi_rs.charger_error);
+            this->publish_state((uint8_t) msg->data.multi_rs.charger_error);
             break;
           case VICTRON_BLE_RECORD_TYPE::ORION_XS:
-            this->publish_state((u_int8_t) msg->data.orion_xs.charger_error);
+            this->publish_state((uint8_t) msg->data.orion_xs.charger_error);
             break;
           default:
             ESP_LOGW(TAG, "[%s] Device has no `charger error` field.", this->parent_->address_str());
@@ -326,31 +326,31 @@ void VictronSensor::register_callback() {
       this->parent_->add_on_message_callback([this](const VictronBleData *msg) {
         switch (msg->record_type) {
           case VICTRON_BLE_RECORD_TYPE::SOLAR_CHARGER:
-            this->publish_state((u_int8_t) msg->data.solar_charger.device_state);
+            this->publish_state((uint8_t) msg->data.solar_charger.device_state);
             break;
           case VICTRON_BLE_RECORD_TYPE::INVERTER:
-            this->publish_state((u_int8_t) msg->data.inverter.device_state);
+            this->publish_state((uint8_t) msg->data.inverter.device_state);
             break;
           case VICTRON_BLE_RECORD_TYPE::DCDC_CONVERTER:
-            this->publish_state((u_int8_t) msg->data.dcdc_converter.device_state);
+            this->publish_state((uint8_t) msg->data.dcdc_converter.device_state);
             break;
           case VICTRON_BLE_RECORD_TYPE::INVERTER_RS:
-            this->publish_state((u_int8_t) msg->data.inverter_rs.device_state);
+            this->publish_state((uint8_t) msg->data.inverter_rs.device_state);
             break;
           case VICTRON_BLE_RECORD_TYPE::AC_CHARGER:
-            this->publish_state((u_int8_t) msg->data.ac_charger.device_state);
+            this->publish_state((uint8_t) msg->data.ac_charger.device_state);
             break;
           case VICTRON_BLE_RECORD_TYPE::SMART_BATTERY_PROTECT:
-            this->publish_state((u_int8_t) msg->data.smart_battery_protect.device_state);
+            this->publish_state((uint8_t) msg->data.smart_battery_protect.device_state);
             break;
           case VICTRON_BLE_RECORD_TYPE::MULTI_RS:
-            this->publish_state((u_int8_t) msg->data.multi_rs.device_state);
+            this->publish_state((uint8_t) msg->data.multi_rs.device_state);
             break;
           case VICTRON_BLE_RECORD_TYPE::VE_BUS:
-            this->publish_state((u_int8_t) msg->data.ve_bus.device_state);
+            this->publish_state((uint8_t) msg->data.ve_bus.device_state);
             break;
           case VICTRON_BLE_RECORD_TYPE::ORION_XS:
-            this->publish_state((u_int8_t) msg->data.orion_xs.device_state);
+            this->publish_state((uint8_t) msg->data.orion_xs.device_state);
             break;
           default:
             ESP_LOGW(TAG, "[%s] Device has no `device state` field.", this->parent_->address_str());
@@ -364,16 +364,16 @@ void VictronSensor::register_callback() {
       this->parent_->add_on_message_callback([this](const VictronBleData *msg) {
         switch (msg->record_type) {
           case VICTRON_BLE_RECORD_TYPE::SMART_LITHIUM:
-            this->publish_state((u_int16_t) msg->data.smart_lithium.SmartLithium_error);
+            this->publish_state((uint16_t) msg->data.smart_lithium.SmartLithium_error);
             break;
           case VICTRON_BLE_RECORD_TYPE::SMART_BATTERY_PROTECT:
-            this->publish_state((u_int8_t) msg->data.smart_battery_protect.error_code);
+            this->publish_state((uint8_t) msg->data.smart_battery_protect.error_code);
             break;
           case VICTRON_BLE_RECORD_TYPE::LYNX_SMART_BMS:
-            this->publish_state((u_int8_t) msg->data.lynx_smart_bms.error);
+            this->publish_state((uint8_t) msg->data.lynx_smart_bms.error);
             break;
           case VICTRON_BLE_RECORD_TYPE::VE_BUS:
-            this->publish_state((u_int8_t) msg->data.ve_bus.ve_bus_error);
+            this->publish_state((uint8_t) msg->data.ve_bus.ve_bus_error);
             break;
           default:
             ESP_LOGW(TAG, "[%s] Device has no `error` field.", this->parent_->address_str());
@@ -474,13 +474,13 @@ void VictronSensor::register_callback() {
       this->parent_->add_on_message_callback([this](const VictronBleData *msg) {
         switch (msg->record_type) {
           case VICTRON_BLE_RECORD_TYPE::DCDC_CONVERTER:
-            this->publish_state((u_int32_t) msg->data.dcdc_converter.off_reason);
+            this->publish_state((uint32_t) msg->data.dcdc_converter.off_reason);
             break;
           case VICTRON_BLE_RECORD_TYPE::SMART_BATTERY_PROTECT:
-            this->publish_state((u_int32_t) msg->data.smart_battery_protect.off_reason);
+            this->publish_state((uint32_t) msg->data.smart_battery_protect.off_reason);
             break;
           case VICTRON_BLE_RECORD_TYPE::ORION_XS:
-            this->publish_state((u_int32_t) msg->data.orion_xs.off_reason);
+            this->publish_state((uint32_t) msg->data.orion_xs.off_reason);
             break;
           default:
             ESP_LOGW(TAG, "[%s] Device has no `off reason` field.", this->parent_->address_str());
@@ -620,7 +620,7 @@ void VictronSensor::register_callback() {
       this->parent_->add_on_smart_lithium_message_callback([this](const VICTRON_BLE_RECORD_SMART_LITHIUM *val) {
         switch (this->type_) {
           case VICTRON_SENSOR_TYPE::BMS_FLAGS:
-            this->publish_state((u_int32_t) val->bms_flags);
+            this->publish_state((uint32_t) val->bms_flags);
             break;
           case VICTRON_SENSOR_TYPE::CELL1:
             this->publish_state_(val->cell1);
@@ -647,10 +647,10 @@ void VictronSensor::register_callback() {
             this->publish_state_(val->cell8);
             break;
           case VICTRON_SENSOR_TYPE::BALANCER_STATUS:
-            if ((u_int8_t) val->balancer_status == 0xF) {
+            if ((uint8_t) val->balancer_status == 0xF) {
               this->publish_state(NAN);
             } else {
-              this->publish_state((u_int8_t) val->balancer_status);
+              this->publish_state((uint8_t) val->balancer_status);
             }
             break;
           default:
@@ -699,10 +699,10 @@ void VictronSensor::register_callback() {
           [this](const VICTRON_BLE_RECORD_SMART_BATTERY_PROTECT *val) {
             switch (this->type_) {
               case VICTRON_SENSOR_TYPE::OUTPUT_STATE:
-                this->publish_state((u_int8_t) val->output_state);
+                this->publish_state((uint8_t) val->output_state);
                 break;
               case VICTRON_SENSOR_TYPE::WARNING_REASON:
-                this->publish_state((u_int16_t) val->warning_reason);
+                this->publish_state((uint16_t) val->warning_reason);
                 break;
               default:
                 break;
@@ -716,10 +716,10 @@ void VictronSensor::register_callback() {
       this->parent_->add_on_lynx_smart_bms_message_callback([this](const VICTRON_BLE_RECORD_LYNX_SMART_BMS *val) {
         switch (this->type_) {
           case VICTRON_SENSOR_TYPE::IO_STATUS:
-            this->publish_state((u_int16_t) val->io_status);
+            this->publish_state((uint16_t) val->io_status);
             break;
           case VICTRON_SENSOR_TYPE::WARNINGS_ALARMS:
-            this->publish_state((u_int32_t) val->warnings_alarms);
+            this->publish_state((uint32_t) val->warnings_alarms);
             break;
           default:
             break;
@@ -732,7 +732,7 @@ void VictronSensor::register_callback() {
       this->parent_->add_on_ve_bus_message_callback([this](const VICTRON_BLE_RECORD_VE_BUS *val) {
         switch (this->type_) {
           case VICTRON_SENSOR_TYPE::ALARM:
-            this->publish_state((u_int8_t) val->alarm);
+            this->publish_state((uint8_t) val->alarm);
             break;
           default:
             break;

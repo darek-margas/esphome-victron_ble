@@ -60,7 +60,7 @@ When connected to the device via VictronConnect App no Instant readout (Bluetoot
 
 See [victron_ble.yaml](/victron_ble.yaml) for a full example.
 
-Requires ESPHome 2026.8.0 or newer (uses the platform-neutral `ble_device_base` BLE layer). If you previously set `esp32_ble_id:` on a `victron_ble` entry, rename it to `ble_hub_id:`; the old key still works but logs a deprecation warning.
+Requires ESPHome 2026.8.0 or newer (uses the platform-neutral `ble_device_base` BLE layer). `victron_ble` works with any ESPHome BLE tracker: `esp32_ble_tracker` (ESP32), `rp2_ble_tracker` (Raspberry Pi Pico W), `bk72xx_ble_tracker` and `ln882h_ble_tracker`; only ESP32 and Pico W are built in CI. `victron_ble_connect` remains ESP32-only. If you previously set `esp32_ble_id:` on a `victron_ble` entry, rename it to `ble_hub_id:`; the old key still works but logs a deprecation warning.
 
 ```yaml
 esphome:

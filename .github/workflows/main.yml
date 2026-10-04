@@ -35,6 +35,7 @@ jobs:
           - tests/test.ble_connect.esp32-idf.yaml
           - tests/test.ble.esp32-ard.yaml
           - tests/test.ble.esp32-idf.yaml
+          - tests/test.ble.rp2-ard.yaml
         # Oldest supported release plus whatever is current on PyPI, so
         # upstream breakages show up before users report them.
         esphome: ["2026.9.1", "latest"]

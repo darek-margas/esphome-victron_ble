@@ -321,8 +321,8 @@ void VictronTextSensor::publish_state_(VE_REG_DEVICE_STATE val) {
       this->publish_state("Not available");
       break;
     default:
-      ESP_LOGW(TAG, "[%s] Unknown device state (%u).", this->parent_->address_str(), (u_int8_t) val);
-      this->publish_state(to_string((u_int8_t) val));
+      ESP_LOGW(TAG, "[%s] Unknown device state (%u).", this->parent_->address_str(), (uint8_t) val);
+      this->publish_state(to_string((uint8_t) val));
       break;
   }
 }
@@ -534,8 +534,8 @@ void VictronTextSensor::publish_state_(VE_REG_CHR_ERROR_CODE val) {
       this->publish_state("Not available");
       break;
     default:
-      ESP_LOGW(TAG, "[%s] Unknown device error (%u).", this->parent_->address_str(), (u_int8_t) val);
-      this->publish_state(to_string((u_int8_t) val));
+      ESP_LOGW(TAG, "[%s] Unknown device error (%u).", this->parent_->address_str(), (uint8_t) val);
+      this->publish_state(to_string((uint8_t) val));
       break;
   }
 }

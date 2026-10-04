@@ -18,7 +18,6 @@ VictronListener = victron_scanner_ns.class_(
 )
 
 CONFIG_SCHEMA = cv.All(
-    cv.only_on_esp32,
     cv.require_esphome_version(2026, 8, 0),
     ble_device_base.rename_legacy_hub_id("victron_scanner"),
     cv.Schema(

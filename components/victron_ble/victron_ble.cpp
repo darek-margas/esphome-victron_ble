@@ -1,9 +1,8 @@
 #include "victron_ble.h"
 #include "esphome/core/log.h"
+#include "esphome/components/ble_device_base/ble_aes_ccm.h"
 
-#ifdef USE_ESP32
-
-#include <aes/esp_aes.h>
+#include <algorithm>
 
 namespace esphome {
 namespace victron_ble {
@@ -167,8 +166,8 @@ bool VictronBle::parse_device(const ble_device_base::ESPBTDevice &device) {
     return false;
   }
 
-  const u_int8_t *crypted_data = manu_data.data.data() + sizeof(VICTRON_BLE_RECORD_BASE);
-  const u_int8_t crypted_len = manu_data.data.size() - sizeof(VICTRON_BLE_RECORD_BASE);
+  const uint8_t *crypted_data = manu_data.data.data() + sizeof(VICTRON_BLE_RECORD_BASE);
+  const uint8_t crypted_len = manu_data.data.size() - sizeof(VICTRON_BLE_RECORD_BASE);
 #if ESPHOME_LOG_LEVEL >= ESPHOME_LOG_LEVEL_VERY_VERBOSE
   char hex_buf[format_hex_pretty_size(sizeof(VICTRON_BLE_RECORD_BASE) + VICTRON_ENCRYPTED_DATA_MAX_SIZE)];
   ESP_LOGVV(TAG, "[%s] Crypted message: %s", this->address_str(),
@@ -180,16 +179,15 @@ bool VictronBle::parse_device(const ble_device_base::ESPBTDevice &device) {
     return false;
   }
 
-  u_int8_t encrypted_data[VICTRON_ENCRYPTED_DATA_MAX_SIZE] = {0};
+  uint8_t encrypted_data[VICTRON_ENCRYPTED_DATA_MAX_SIZE] = {0};
 
   if (crypted_len > sizeof(encrypted_data)) {
     ESP_LOGW(TAG, "[%s] Record is too long %u", this->address_str(), crypted_len);
     return false;
   }
 
-  if (!this->encrypt_message_(crypted_data, crypted_len, encrypted_data, victron_data->data_counter_lsb,
+  if (!this->decrypt_message_(crypted_data, crypted_len, encrypted_data, victron_data->data_counter_lsb,
                               victron_data->data_counter_msb)) {
-    // Error logging is done by encrypt_message_.
     return false;
   }
 
@@ -200,30 +198,32 @@ bool VictronBle::parse_device(const ble_device_base::ESPBTDevice &device) {
   return true;
 }
 
-bool VictronBle::encrypt_message_(const u_int8_t *crypted_data, const u_int8_t crypted_len,
-                                  u_int8_t encrypted_data[VICTRON_ENCRYPTED_DATA_MAX_SIZE],
-                                  const u_int8_t data_counter_lsb, const u_int8_t data_counter_msb) {
-  esp_aes_context ctx;
-  esp_aes_init(&ctx);
-  auto status = esp_aes_setkey(&ctx, this->bindkey_.data(), this->bindkey_.size() * 8);
-  if (status != 0) {
-    ESP_LOGE(TAG, "[%s] Error during esp_aes_setkey operation (%i).", this->address_str(), status);
-    esp_aes_free(&ctx);
-    return false;
+/**
+ * AES-128-CTR decryption of the advertisement payload.
+ *
+ * The initial counter block is the 16-bit data counter (little endian) followed by zeros. Each further block
+ * increments the 128-bit counter big-endian (same as mbedtls / esp_aes CTR mode). Uses the portable software AES
+ * from ble_device_base, so it works on every platform with a BLE tracker, not only ESP32.
+ */
+bool VictronBle::decrypt_message_(const uint8_t *crypted_data, const uint8_t crypted_len,
+                                  uint8_t encrypted_data[VICTRON_ENCRYPTED_DATA_MAX_SIZE],
+                                  const uint8_t data_counter_lsb, const uint8_t data_counter_msb) {
+  uint8_t counter[16] = {data_counter_lsb, data_counter_msb, 0};
+  uint8_t keystream[16];
+
+  for (uint8_t offset = 0; offset < crypted_len; offset += sizeof(keystream)) {
+    ble_device_base::aes128_encrypt_block(this->bindkey_.data(), counter, keystream);
+    const uint8_t block_len = std::min<uint8_t>(sizeof(keystream), crypted_len - offset);
+    for (uint8_t i = 0; i < block_len; i++) {
+      encrypted_data[offset + i] = crypted_data[offset + i] ^ keystream[i];
+    }
+    // Increment the counter block (big endian).
+    for (int i = sizeof(counter) - 1; i >= 0; i--) {
+      if (++counter[i] != 0)
+        break;
+    }
   }
 
-  size_t nc_offset = 0;
-  u_int8_t nonce_counter[16] = {data_counter_lsb, data_counter_msb, 0};
-  u_int8_t stream_block[16] = {0};
-
-  status = esp_aes_crypt_ctr(&ctx, crypted_len, &nc_offset, nonce_counter, stream_block, crypted_data, encrypted_data);
-  if (status != 0) {
-    ESP_LOGE(TAG, "[%s] Error during esp_aes_crypt_ctr operation (%i).", this->address_str(), status);
-    esp_aes_free(&ctx);
-    return false;
-  }
-
-  esp_aes_free(&ctx);
 #if ESPHOME_LOG_LEVEL >= ESPHOME_LOG_LEVEL_VERBOSE
   char hex_buf[format_hex_pretty_size(VICTRON_ENCRYPTED_DATA_MAX_SIZE)];
   ESP_LOGV(TAG, "[%s] Decrypted message: %s", this->address_str(),
@@ -232,8 +232,8 @@ bool VictronBle::encrypt_message_(const u_int8_t *crypted_data, const u_int8_t c
   return true;
 }
 
-bool VictronBle::is_record_type_supported_(const VICTRON_BLE_RECORD_TYPE record_type, const u_int8_t crypted_len) {
-  u_int8_t expected_len = 0;
+bool VictronBle::is_record_type_supported_(const VICTRON_BLE_RECORD_TYPE record_type, const uint8_t crypted_len) {
+  uint8_t expected_len = 0;
   switch (record_type) {
     case VICTRON_BLE_RECORD_TYPE::SOLAR_CHARGER:
       if (crypted_len >= sizeof(VICTRON_BLE_RECORD_SOLAR_CHARGER)) {
@@ -314,17 +314,17 @@ bool VictronBle::is_record_type_supported_(const VICTRON_BLE_RECORD_TYPE record_
       expected_len = sizeof(VICTRON_BLE_RECORD_ORION_XS);
       break;
     default:
-      ESP_LOGW(TAG, "[%s] Unsupported record type %02X", this->address_str(), (u_int8_t) record_type);
+      ESP_LOGW(TAG, "[%s] Unsupported record type %02X", this->address_str(), (uint8_t) record_type);
       return false;
       break;
   }
   ESP_LOGW(TAG, "[%s] Record type %02X message is too short %u, expected %u bytes.", this->address_str(),
-           (u_int8_t) record_type, crypted_len, expected_len);
+           (uint8_t) record_type, crypted_len, expected_len);
   return false;
 }
 
 void VictronBle::handle_record_(const VICTRON_BLE_RECORD_TYPE record_type,
-                                const u_int8_t encrypted_data[VICTRON_ENCRYPTED_DATA_MAX_SIZE]) {
+                                const uint8_t encrypted_data[VICTRON_ENCRYPTED_DATA_MAX_SIZE]) {
   this->last_package_.record_type = record_type;
   memcpy(this->last_package_.data.raw, encrypted_data, VICTRON_ENCRYPTED_DATA_MAX_SIZE);
   this->last_package_updated_ = true;
@@ -333,5 +333,3 @@ void VictronBle::handle_record_(const VICTRON_BLE_RECORD_TYPE record_type,
 
 }  // namespace victron_ble
 }  // namespace esphome
-
-#endif

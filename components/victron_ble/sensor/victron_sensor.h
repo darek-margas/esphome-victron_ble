@@ -234,7 +234,7 @@ class VictronSensor : public sensor::Sensor, public Parented<VictronBle> {
     if (val == 0xFFFFF) {
       this->publish_state(NAN);
     } else {
-      this->publish_state(-0.1f * static_cast<u_int32_t>(val));
+      this->publish_state(-0.1f * static_cast<uint32_t>(val));
     }
   };
 
@@ -266,7 +266,7 @@ class VictronSensor : public sensor::Sensor, public Parented<VictronBle> {
     if (val == 0xFFFF) {
       this->publish_state(NAN);
     } else {
-      this->publish_state(0.01f * static_cast<u_int16_t>(val));
+      this->publish_state(0.01f * static_cast<uint16_t>(val));
     }
   };
 
@@ -282,7 +282,7 @@ class VictronSensor : public sensor::Sensor, public Parented<VictronBle> {
     if (val == 0xFFFF) {
       this->publish_state(NAN);
     } else {
-      this->publish_state(0.1f * static_cast<u_int16_t>(val));
+      this->publish_state(0.1f * static_cast<uint16_t>(val));
     }
   };
 
@@ -298,7 +298,7 @@ class VictronSensor : public sensor::Sensor, public Parented<VictronBle> {
     if (val == 0xFFFF) {
       this->publish_state(NAN);
     } else {
-      this->publish_state(static_cast<u_int16_t>(val));
+      this->publish_state(static_cast<uint16_t>(val));
     }
   };
 
@@ -306,7 +306,7 @@ class VictronSensor : public sensor::Sensor, public Parented<VictronBle> {
     if (val == 0xFFFF) {
       this->publish_state(NAN);
     } else {
-      this->publish_state(0.01f * static_cast<u_int16_t>(val) - 273.15f);
+      this->publish_state(0.01f * static_cast<uint16_t>(val) - 273.15f);
     }
   };
 
@@ -314,7 +314,7 @@ class VictronSensor : public sensor::Sensor, public Parented<VictronBle> {
     if (val == 0x7FFF) {
       this->publish_state(NAN);
     } else {
-      this->publish_state(0.01f * static_cast<u_int16_t>(val));
+      this->publish_state(0.01f * static_cast<uint16_t>(val));
     }
   };
 
@@ -322,7 +322,7 @@ class VictronSensor : public sensor::Sensor, public Parented<VictronBle> {
     if (val == 0x3FFF) {
       this->publish_state(NAN);
     } else {
-      this->publish_state(0.01f * static_cast<u_int16_t>(val));
+      this->publish_state(0.01f * static_cast<uint16_t>(val));
     }
   };
 
@@ -330,7 +330,7 @@ class VictronSensor : public sensor::Sensor, public Parented<VictronBle> {
     if (val == 0x1FFF) {
       this->publish_state(NAN);
     } else {
-      this->publish_state(0.01f * static_cast<u_int16_t>(val));
+      this->publish_state(0.01f * static_cast<uint16_t>(val));
     }
   };
 
@@ -338,7 +338,7 @@ class VictronSensor : public sensor::Sensor, public Parented<VictronBle> {
     if (val == 0xFFF) {
       this->publish_state(NAN);
     } else {
-      this->publish_state(0.01f * static_cast<u_int16_t>(val));
+      this->publish_state(0.01f * static_cast<uint16_t>(val));
     }
   };
 
@@ -346,7 +346,7 @@ class VictronSensor : public sensor::Sensor, public Parented<VictronBle> {
     if (val == 0x7FF) {
       this->publish_state(NAN);
     } else {
-      this->publish_state(0.1f * static_cast<u_int16_t>(val));
+      this->publish_state(0.1f * static_cast<uint16_t>(val));
     }
   };
 
@@ -354,7 +354,7 @@ class VictronSensor : public sensor::Sensor, public Parented<VictronBle> {
     if (val == 0x3FF) {
       this->publish_state(NAN);
     } else {
-      this->publish_state(0.1f * static_cast<u_int16_t>(val));
+      this->publish_state(0.1f * static_cast<uint16_t>(val));
     }
   };
 
@@ -362,7 +362,7 @@ class VictronSensor : public sensor::Sensor, public Parented<VictronBle> {
     if (val == 0x1FF) {
       this->publish_state(NAN);
     } else {
-      this->publish_state(-0.1f * static_cast<u_int16_t>(val));
+      this->publish_state(-0.1f * static_cast<uint16_t>(val));
     }
   };
 
@@ -370,7 +370,7 @@ class VictronSensor : public sensor::Sensor, public Parented<VictronBle> {
     if (val == 0x1FF) {
       this->publish_state(NAN);
     } else {
-      this->publish_state(0.1f * static_cast<u_int16_t>(val));
+      this->publish_state(0.1f * static_cast<uint16_t>(val));
     }
   };
 
@@ -378,7 +378,7 @@ class VictronSensor : public sensor::Sensor, public Parented<VictronBle> {
     if (val == 0x7F) {
       this->publish_state(NAN);
     } else {
-      this->publish_state(0.01f * static_cast<u_int16_t>(val) + 2.60f);
+      this->publish_state(0.01f * static_cast<uint16_t>(val) + 2.60f);
     }
   };
 
@@ -386,7 +386,7 @@ class VictronSensor : public sensor::Sensor, public Parented<VictronBle> {
     if (val == 0x7F) {
       this->publish_state(NAN);
     } else {
-      this->publish_state(static_cast<u_int16_t>(val));
+      this->publish_state(static_cast<uint16_t>(val));
     }
   };
 
@@ -394,7 +394,7 @@ class VictronSensor : public sensor::Sensor, public Parented<VictronBle> {
     if (val == 0x7F) {
       this->publish_state(NAN);
     } else {
-      this->publish_state(-40.0f + static_cast<u_int16_t>(val));
+      this->publish_state(-40.0f + static_cast<uint16_t>(val));
     }
   };
 
@@ -418,7 +418,7 @@ class VictronSensor : public sensor::Sensor, public Parented<VictronBle> {
     if (val_C == 0xFFFF || val_V == 0xFFFF) {
       this->publish_state(NAN);
     } else {
-      this->publish_state((0.1f * static_cast<u_int16_t>(val_C)) * (0.01f * static_cast<u_int16_t>(val_V)));
+      this->publish_state((0.1f * static_cast<uint16_t>(val_C)) * (0.01f * static_cast<uint16_t>(val_V)));
     }
   };
 
@@ -426,7 +426,7 @@ class VictronSensor : public sensor::Sensor, public Parented<VictronBle> {
     if (val_C == 0x7FFF || val_V == 0x3FFF) {
       this->publish_state(NAN);
     } else {
-      this->publish_state((0.1f * static_cast<int16_t>(val_C)) * (0.01f * static_cast<u_int16_t>(val_V)));
+      this->publish_state((0.1f * static_cast<int16_t>(val_C)) * (0.01f * static_cast<uint16_t>(val_V)));
     }
   };
 
@@ -434,7 +434,7 @@ class VictronSensor : public sensor::Sensor, public Parented<VictronBle> {
     if (val_C == 0x7FF || val_V == 0x1FFF) {
       this->publish_state(NAN);
     } else {
-      this->publish_state((0.1f * static_cast<u_int16_t>(val_C)) * (0.01f * static_cast<u_int16_t>(val_V)));
+      this->publish_state((0.1f * static_cast<uint16_t>(val_C)) * (0.01f * static_cast<uint16_t>(val_V)));
     }
   };
 
@@ -442,7 +442,7 @@ class VictronSensor : public sensor::Sensor, public Parented<VictronBle> {
     if (val_C == 0x1FF || val_V == 0x7FFF) {
       this->publish_state(NAN);
     } else {
-      this->publish_state((-0.1f * static_cast<u_int16_t>(val_C)) * (0.01f * static_cast<u_int16_t>(val_V)));
+      this->publish_state((-0.1f * static_cast<uint16_t>(val_C)) * (0.01f * static_cast<uint16_t>(val_V)));
     }
   };
 };

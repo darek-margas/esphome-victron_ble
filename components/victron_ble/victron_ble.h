@@ -3,7 +3,7 @@
 #include <array>
 #include "esphome/core/automation.h"
 #include "esphome/core/component.h"
-#include "esphome/components/esp32_ble_tracker/esp32_ble_tracker.h"
+#include "esphome/components/ble_device_base/ble_device.h"
 #include "victron_custom_type.h"
 
 #ifdef USE_ESP32
@@ -911,24 +911,21 @@ struct VictronBleData {
   } data;
 };
 
-class VictronBle : public esp32_ble_tracker::ESPBTDeviceListener, public Component {
+class VictronBle : public ble_device_base::ESPBTDeviceListener, public Component {
  public:
   void dump_config() override;
 
-  bool parse_device(const esp32_ble_tracker::ESPBTDevice &device) override;
+  bool parse_device(const ble_device_base::ESPBTDevice &device) override;
 
-  void set_address(uint64_t address) { this->address_ = address; }
-
-  inline std::string address_str() const {
-    if (this->address_ == 0) {
-      return "";
-    } else {
-      return str_snprintf("%02X:%02X:%02X:%02X:%02X:%02X", 17, (uint8_t) (this->address_ >> 40) & 0xff,
-                          (uint8_t) (this->address_ >> 32) & 0xff, (uint8_t) (this->address_ >> 24) & 0xff,
-                          (uint8_t) (this->address_ >> 16) & 0xff, (uint8_t) (this->address_ >> 8) & 0xff,
-                          (uint8_t) (this->address_ >> 0) & 0xff);
-    }
+  void set_address(uint64_t address) {
+    this->address_ = address;
+    snprintf(this->address_str_, sizeof(this->address_str_), "%02X:%02X:%02X:%02X:%02X:%02X",
+             (uint8_t) (address >> 40) & 0xff, (uint8_t) (address >> 32) & 0xff, (uint8_t) (address >> 24) & 0xff,
+             (uint8_t) (address >> 16) & 0xff, (uint8_t) (address >> 8) & 0xff, (uint8_t) (address >> 0) & 0xff);
   }
+
+  // Formatted once in set_address(); no heap allocation per log line.
+  const char *address_str() const { return this->address_str_; }
 
   void set_bindkey(std::array<uint8_t, 16> key) { this->bindkey_ = key; }
 
@@ -957,7 +954,8 @@ class VictronBle : public esp32_ble_tracker::ESPBTDeviceListener, public Compone
 #undef VICTRON_MESSAGE_ADD_CB
 
  protected:
-  uint64_t address_;
+  uint64_t address_{0};
+  char address_str_[18]{};  // "XX:XX:XX:XX:XX:XX\0"
   std::array<uint8_t, 16> bindkey_;
 
   VictronBleData last_package_{};
@@ -988,7 +986,7 @@ class VictronBle : public esp32_ble_tracker::ESPBTDeviceListener, public Compone
 
   bool is_record_type_supported_(const VICTRON_BLE_RECORD_TYPE record_type, const u_int8_t crypted_len);
   void handle_record_(const VICTRON_BLE_RECORD_TYPE record_type, const u_int8_t encrypted_data[32]);
-  void update();
+  void publish_last_package_();
 };
 
 }  // namespace victron_ble

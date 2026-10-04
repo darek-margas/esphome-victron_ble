@@ -12,11 +12,11 @@ static const char *const TAG = "victron_ble";
 
 void VictronBle::dump_config() {
   ESP_LOGCONFIG(TAG, "Victron BLE:");
-  ESP_LOGCONFIG(TAG, "  Address: %s", this->address_str().c_str());
+  ESP_LOGCONFIG(TAG, "  Address: %s", this->address_str());
 }
 
 // Submit update to sensors & callbacks.
-void VictronBle::update() {
+void VictronBle::publish_last_package_() {
   if (this->last_package_updated_) {
     this->last_package_updated_ = false;
     if (this->on_message_callback_.size() > 0) {
@@ -24,7 +24,7 @@ void VictronBle::update() {
     }
     switch (this->last_package_.record_type) {
       case VICTRON_BLE_RECORD_TYPE::SOLAR_CHARGER:
-        ESP_LOGD(TAG, "[%s] Received SOLAR_CHARGER message.", this->address_str().c_str());
+        ESP_LOGD(TAG, "[%s] Received SOLAR_CHARGER message.", this->address_str());
         if (this->on_solar_charger_message_callback_.size() > 0) {
           this->defer("VictronBle1", [this]() {
             this->on_solar_charger_message_callback_.call(&this->last_package_.data.solar_charger);
@@ -32,7 +32,7 @@ void VictronBle::update() {
         }
         break;
       case VICTRON_BLE_RECORD_TYPE::BATTERY_MONITOR:
-        ESP_LOGD(TAG, "[%s] Received BATTERY_MONITOR message.", this->address_str().c_str());
+        ESP_LOGD(TAG, "[%s] Received BATTERY_MONITOR message.", this->address_str());
         if (this->on_battery_monitor_message_callback_.size() > 0) {
           this->defer("VictronBle2", [this]() {
             this->on_battery_monitor_message_callback_.call(&this->last_package_.data.battery_monitor);
@@ -40,7 +40,7 @@ void VictronBle::update() {
         }
         break;
       case VICTRON_BLE_RECORD_TYPE::INVERTER:
-        ESP_LOGD(TAG, "[%s] Received INVERTER message.", this->address_str().c_str());
+        ESP_LOGD(TAG, "[%s] Received INVERTER message.", this->address_str());
         if (this->on_inverter_message_callback_.size() > 0) {
           this->defer("VictronBle3",
                       [this]() { this->on_inverter_message_callback_.call(&this->last_package_.data.inverter); });
@@ -48,7 +48,7 @@ void VictronBle::update() {
         break;
       case VICTRON_BLE_RECORD_TYPE::DCDC_CONVERTER:
 
-        ESP_LOGD(TAG, "[%s] Received DCDC_CONVERTER message.", this->address_str().c_str());
+        ESP_LOGD(TAG, "[%s] Received DCDC_CONVERTER message.", this->address_str());
         if (this->on_dcdc_converter_message_callback_.size() > 0) {
           this->defer("VictronBle4", [this]() {
             this->on_dcdc_converter_message_callback_.call(&this->last_package_.data.dcdc_converter);
@@ -56,7 +56,7 @@ void VictronBle::update() {
         }
         break;
       case VICTRON_BLE_RECORD_TYPE::SMART_LITHIUM:
-        ESP_LOGD(TAG, "[%s] Received SMART_LITHIUM message.", this->address_str().c_str());
+        ESP_LOGD(TAG, "[%s] Received SMART_LITHIUM message.", this->address_str());
         if (this->on_smart_lithium_message_callback_.size() > 0) {
           this->defer("VictronBle5", [this]() {
             this->on_smart_lithium_message_callback_.call(&this->last_package_.data.smart_lithium);
@@ -64,21 +64,21 @@ void VictronBle::update() {
         }
         break;
       case VICTRON_BLE_RECORD_TYPE::INVERTER_RS:
-        ESP_LOGD(TAG, "[%s] Received INVERTER_RS message.", this->address_str().c_str());
+        ESP_LOGD(TAG, "[%s] Received INVERTER_RS message.", this->address_str());
         if (this->on_inverter_rs_message_callback_.size() > 0) {
           this->defer("VictronBle6",
                       [this]() { this->on_inverter_rs_message_callback_.call(&this->last_package_.data.inverter_rs); });
         }
         break;
       case VICTRON_BLE_RECORD_TYPE::AC_CHARGER:
-        ESP_LOGD(TAG, "[%s] Received AC_CHARGER message.", this->address_str().c_str());
+        ESP_LOGD(TAG, "[%s] Received AC_CHARGER message.", this->address_str());
         if (this->on_ac_charger_message_callback_.size() > 0) {
           this->defer("VictronBle8",
                       [this]() { this->on_ac_charger_message_callback_.call(&this->last_package_.data.ac_charger); });
         }
         break;
       case VICTRON_BLE_RECORD_TYPE::SMART_BATTERY_PROTECT:
-        ESP_LOGD(TAG, "[%s] Received SMART_BATTERY_PROTECT message.", this->address_str().c_str());
+        ESP_LOGD(TAG, "[%s] Received SMART_BATTERY_PROTECT message.", this->address_str());
         if (this->on_smart_battery_protect_message_callback_.size() > 0) {
           this->defer("VictronBle9", [this]() {
             this->on_smart_battery_protect_message_callback_.call(&this->last_package_.data.smart_battery_protect);
@@ -86,7 +86,7 @@ void VictronBle::update() {
         }
         break;
       case VICTRON_BLE_RECORD_TYPE::LYNX_SMART_BMS:
-        ESP_LOGD(TAG, "[%s] Received LYNX_SMART_BMS message.", this->address_str().c_str());
+        ESP_LOGD(TAG, "[%s] Received LYNX_SMART_BMS message.", this->address_str());
         if (this->on_lynx_smart_bms_message_callback_.size() > 0) {
           this->defer("VictronBleA", [this]() {
             this->on_lynx_smart_bms_message_callback_.call(&this->last_package_.data.lynx_smart_bms);
@@ -94,21 +94,21 @@ void VictronBle::update() {
         }
         break;
       case VICTRON_BLE_RECORD_TYPE::MULTI_RS:
-        ESP_LOGD(TAG, "[%s] Received MULTI_RS message.", this->address_str().c_str());
+        ESP_LOGD(TAG, "[%s] Received MULTI_RS message.", this->address_str());
         if (this->on_multi_rs_message_callback_.size() > 0) {
           this->defer("VictronBleB",
                       [this]() { this->on_multi_rs_message_callback_.call(&this->last_package_.data.multi_rs); });
         }
         break;
       case VICTRON_BLE_RECORD_TYPE::VE_BUS:
-        ESP_LOGD(TAG, "[%s] Received VE_BUS message.", this->address_str().c_str());
+        ESP_LOGD(TAG, "[%s] Received VE_BUS message.", this->address_str());
         if (this->on_ve_bus_message_callback_.size() > 0) {
           this->defer("VictronBleC",
                       [this]() { this->on_ve_bus_message_callback_.call(&this->last_package_.data.ve_bus); });
         }
         break;
       case VICTRON_BLE_RECORD_TYPE::DC_ENERGY_METER:
-        ESP_LOGD(TAG, "[%s] Received DC_ENERGY_METER message.", this->address_str().c_str());
+        ESP_LOGD(TAG, "[%s] Received DC_ENERGY_METER message.", this->address_str());
         if (this->on_dc_energy_meter_message_callback_.size() > 0) {
           this->defer("VictronBleD", [this]() {
             this->on_dc_energy_meter_message_callback_.call(&this->last_package_.data.dc_energy_meter);
@@ -116,7 +116,7 @@ void VictronBle::update() {
         }
         break;
       case VICTRON_BLE_RECORD_TYPE::ORION_XS:
-        ESP_LOGD(TAG, "[%s] Received ORION_XS message.", this->address_str().c_str());
+        ESP_LOGD(TAG, "[%s] Received ORION_XS message.", this->address_str());
         if (this->on_orion_xs_message_callback_.size() > 0) {
           this->defer("VictronBleF",
                       [this]() { this->on_orion_xs_message_callback_.call(&this->last_package_.data.orion_xs); });
@@ -132,7 +132,7 @@ void VictronBle::update() {
  * Parse all incoming BLE payloads to see if it is a Victron BLE advertisement.
  */
 
-bool VictronBle::parse_device(const esp32_ble_tracker::ESPBTDevice &device) {
+bool VictronBle::parse_device(const ble_device_base::ESPBTDevice &device) {
   if (device.address_uint64() != this->address_) {
     return false;
   }
@@ -143,7 +143,7 @@ bool VictronBle::parse_device(const esp32_ble_tracker::ESPBTDevice &device) {
   }
 
   const auto &manu_data = manu_datas[0];
-  if (manu_data.uuid != esp32_ble_tracker::ESPBTUUID::from_uint16(VICTRON_MANUFACTURER_ID) ||
+  if (manu_data.uuid != ble_device_base::ESPBTUUID::from_uint16(VICTRON_MANUFACTURER_ID) ||
       manu_data.data.size() <= sizeof(VICTRON_BLE_RECORD_BASE) ||
       manu_data.data.size() > (sizeof(VICTRON_BLE_RECORD_BASE) + VICTRON_ENCRYPTED_DATA_MAX_SIZE)) {
     return false;
@@ -158,7 +158,7 @@ bool VictronBle::parse_device(const esp32_ble_tracker::ESPBTDevice &device) {
   }
 
   if (victron_data->encryption_key_0 != this->bindkey_[0]) {
-    ESP_LOGW(TAG, "[%s] Incorrect Bindkey. Must start with %02X", this->address_str().c_str(), this->bindkey_[0]);
+    ESP_LOGW(TAG, "[%s] Incorrect Bindkey. Must start with %02X", this->address_str(), this->bindkey_[0]);
     return false;
   }
 
@@ -169,8 +169,11 @@ bool VictronBle::parse_device(const esp32_ble_tracker::ESPBTDevice &device) {
 
   const u_int8_t *crypted_data = manu_data.data.data() + sizeof(VICTRON_BLE_RECORD_BASE);
   const u_int8_t crypted_len = manu_data.data.size() - sizeof(VICTRON_BLE_RECORD_BASE);
-  ESP_LOGVV(TAG, "[%s] Cryted message: %s", this->address_str().c_str(),
-            format_hex_pretty(crypted_data, crypted_len).c_str());
+#if ESPHOME_LOG_LEVEL >= ESPHOME_LOG_LEVEL_VERY_VERBOSE
+  char hex_buf[format_hex_pretty_size(sizeof(VICTRON_BLE_RECORD_BASE) + VICTRON_ENCRYPTED_DATA_MAX_SIZE)];
+  ESP_LOGVV(TAG, "[%s] Crypted message: %s", this->address_str(),
+            format_hex_pretty_to(hex_buf, crypted_data, crypted_len));
+#endif
 
   if (!this->is_record_type_supported_(victron_data->record_type, crypted_len)) {
     // Error logging is done by `is_record_type_supported_`.
@@ -180,7 +183,7 @@ bool VictronBle::parse_device(const esp32_ble_tracker::ESPBTDevice &device) {
   u_int8_t encrypted_data[VICTRON_ENCRYPTED_DATA_MAX_SIZE] = {0};
 
   if (crypted_len > sizeof(encrypted_data)) {
-    ESP_LOGW(TAG, "[%s] Record is too long %u", this->address_str().c_str(), crypted_len);
+    ESP_LOGW(TAG, "[%s] Record is too long %u", this->address_str(), crypted_len);
     return false;
   }
 
@@ -204,7 +207,7 @@ bool VictronBle::encrypt_message_(const u_int8_t *crypted_data, const u_int8_t c
   esp_aes_init(&ctx);
   auto status = esp_aes_setkey(&ctx, this->bindkey_.data(), this->bindkey_.size() * 8);
   if (status != 0) {
-    ESP_LOGE(TAG, "[%s] Error during esp_aes_setkey operation (%i).", this->address_str().c_str(), status);
+    ESP_LOGE(TAG, "[%s] Error during esp_aes_setkey operation (%i).", this->address_str(), status);
     esp_aes_free(&ctx);
     return false;
   }
@@ -215,14 +218,17 @@ bool VictronBle::encrypt_message_(const u_int8_t *crypted_data, const u_int8_t c
 
   status = esp_aes_crypt_ctr(&ctx, crypted_len, &nc_offset, nonce_counter, stream_block, crypted_data, encrypted_data);
   if (status != 0) {
-    ESP_LOGE(TAG, "[%s] Error during esp_aes_crypt_ctr operation (%i).", this->address_str().c_str(), status);
+    ESP_LOGE(TAG, "[%s] Error during esp_aes_crypt_ctr operation (%i).", this->address_str(), status);
     esp_aes_free(&ctx);
     return false;
   }
 
   esp_aes_free(&ctx);
-  ESP_LOGV(TAG, "[%s] Encrypted message: %s", this->address_str().c_str(),
-           format_hex_pretty(encrypted_data, crypted_len).c_str());
+#if ESPHOME_LOG_LEVEL >= ESPHOME_LOG_LEVEL_VERBOSE
+  char hex_buf[format_hex_pretty_size(VICTRON_ENCRYPTED_DATA_MAX_SIZE)];
+  ESP_LOGV(TAG, "[%s] Decrypted message: %s", this->address_str(),
+           format_hex_pretty_to(hex_buf, encrypted_data, crypted_len));
+#endif
   return true;
 }
 
@@ -308,11 +314,11 @@ bool VictronBle::is_record_type_supported_(const VICTRON_BLE_RECORD_TYPE record_
       expected_len = sizeof(VICTRON_BLE_RECORD_ORION_XS);
       break;
     default:
-      ESP_LOGW(TAG, "[%s] Unsupported record type %02X", this->address_str().c_str(), (u_int8_t) record_type);
+      ESP_LOGW(TAG, "[%s] Unsupported record type %02X", this->address_str(), (u_int8_t) record_type);
       return false;
       break;
   }
-  ESP_LOGW(TAG, "[%s] Record type %02X message is too short %u, expected %u bytes.", this->address_str().c_str(),
+  ESP_LOGW(TAG, "[%s] Record type %02X message is too short %u, expected %u bytes.", this->address_str(),
            (u_int8_t) record_type, crypted_len, expected_len);
   return false;
 }
@@ -322,7 +328,7 @@ void VictronBle::handle_record_(const VICTRON_BLE_RECORD_TYPE record_type,
   this->last_package_.record_type = record_type;
   memcpy(this->last_package_.data.raw, encrypted_data, VICTRON_ENCRYPTED_DATA_MAX_SIZE);
   this->last_package_updated_ = true;
-  this->update();
+  this->publish_last_package_();
 }
 
 }  // namespace victron_ble

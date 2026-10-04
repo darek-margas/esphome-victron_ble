@@ -1,7 +1,7 @@
 #pragma once
 
 #include "esphome/core/component.h"
-#include "esphome/components/esp32_ble_tracker/esp32_ble_tracker.h"
+#include "esphome/components/ble_device_base/ble_device.h"
 
 #ifdef USE_ESP32
 
@@ -243,9 +243,9 @@ struct VICTRON_BT_MANUFACTURER_DATA {
   VICTRON_PRODUCT_ID product_id;
 };
 
-class VictronListener : public esp32_ble_tracker::ESPBTDeviceListener {
+class VictronListener : public ble_device_base::ESPBTDeviceListener {
  public:
-  bool parse_device(const esp32_ble_tracker::ESPBTDevice &device) override;
+  bool parse_device(const ble_device_base::ESPBTDevice &device) override;
 };
 
 }  // namespace victron_scanner

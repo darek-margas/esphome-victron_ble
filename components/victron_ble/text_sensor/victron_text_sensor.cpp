@@ -20,7 +20,7 @@ void VictronTextSensor::register_callback() {
             this->publish_state_(msg->data.ve_bus.alarm);
             break;
           default:
-            ESP_LOGW(TAG, "[%s] Device has no `alarm` field.", this->parent_->address_str().c_str());
+            ESP_LOGW(TAG, "[%s] Device has no `alarm` field.", this->parent_->address_str());
             this->publish_state("");
             break;
         }
@@ -35,7 +35,7 @@ void VictronTextSensor::register_callback() {
             this->publish_state_(msg->data.ve_bus.active_ac_in);
             break;
           default:
-            ESP_LOGW(TAG, "[%s] Device has no `active ac in` field.", this->parent_->address_str().c_str());
+            ESP_LOGW(TAG, "[%s] Device has no `active ac in` field.", this->parent_->address_str());
             this->publish_state("");
             break;
         }
@@ -56,7 +56,7 @@ void VictronTextSensor::register_callback() {
             this->publish_state_(msg->data.dc_energy_meter.alarm_reason);
             break;
           default:
-            ESP_LOGW(TAG, "[%s] Device has no `alarm reason` field.", this->parent_->address_str().c_str());
+            ESP_LOGW(TAG, "[%s] Device has no `alarm reason` field.", this->parent_->address_str());
             this->publish_state("");
             break;
         }
@@ -83,7 +83,7 @@ void VictronTextSensor::register_callback() {
             this->publish_state_(msg->data.orion_xs.charger_error);
             break;
           default:
-            ESP_LOGW(TAG, "[%s] Device has no `charger error` field.", this->parent_->address_str().c_str());
+            ESP_LOGW(TAG, "[%s] Device has no `charger error` field.", this->parent_->address_str());
             this->publish_state("");
             break;
         }
@@ -119,7 +119,7 @@ void VictronTextSensor::register_callback() {
             this->publish_state_(msg->data.orion_xs.device_state);
             break;
           default:
-            ESP_LOGW(TAG, "[%s] Device has no `device state` field.", this->parent_->address_str().c_str());
+            ESP_LOGW(TAG, "[%s] Device has no `device state` field.", this->parent_->address_str());
             this->publish_state("");
             break;
         }
@@ -131,7 +131,7 @@ void VictronTextSensor::register_callback() {
             this->publish_state_(msg->data.smart_battery_protect.error_code);
             break;
           default:
-            ESP_LOGW(TAG, "[%s] Device has no `error code` field.", this->parent_->address_str().c_str());
+            ESP_LOGW(TAG, "[%s] Device has no `error code` field.", this->parent_->address_str());
             this->publish_state("");
             break;
         }
@@ -149,7 +149,7 @@ void VictronTextSensor::register_callback() {
             this->publish_state_(msg->data.orion_xs.off_reason);
             break;
           default:
-            ESP_LOGW(TAG, "[%s] Device has no `off reason` field.", this->parent_->address_str().c_str());
+            ESP_LOGW(TAG, "[%s] Device has no `off reason` field.", this->parent_->address_str());
             this->publish_state("");
             break;
         }
@@ -161,7 +161,7 @@ void VictronTextSensor::register_callback() {
             this->publish_state_(msg->data.smart_battery_protect.warning_reason);
             break;
           default:
-            ESP_LOGW(TAG, "[%s] Device has no `warning reason` field.", this->parent_->address_str().c_str());
+            ESP_LOGW(TAG, "[%s] Device has no `warning reason` field.", this->parent_->address_str());
             this->publish_state("");
             break;
         }
@@ -173,7 +173,7 @@ void VictronTextSensor::register_callback() {
             this->publish_state_(msg->data.smart_battery_protect.output_state);
             break;
           default:
-            ESP_LOGW(TAG, "[%s] Device has no `output state` field.", this->parent_->address_str().c_str());
+            ESP_LOGW(TAG, "[%s] Device has no `output state` field.", this->parent_->address_str());
             this->publish_state("");
             break;
         }
@@ -185,7 +185,7 @@ void VictronTextSensor::register_callback() {
             this->publish_state_(msg->data.smart_lithium.balancer_status);
             break;
           default:
-            ESP_LOGW(TAG, "[%s] Device has no `balancer status` field.", this->parent_->address_str().c_str());
+            ESP_LOGW(TAG, "[%s] Device has no `balancer status` field.", this->parent_->address_str());
             this->publish_state("");
             break;
         }
@@ -321,7 +321,7 @@ void VictronTextSensor::publish_state_(VE_REG_DEVICE_STATE val) {
       this->publish_state("Not available");
       break;
     default:
-      ESP_LOGW(TAG, "[%s] Unknown device state (%u).", this->parent_->address_str().c_str(), (u_int8_t) val);
+      ESP_LOGW(TAG, "[%s] Unknown device state (%u).", this->parent_->address_str(), (u_int8_t) val);
       this->publish_state(to_string((u_int8_t) val));
       break;
   }
@@ -534,7 +534,7 @@ void VictronTextSensor::publish_state_(VE_REG_CHR_ERROR_CODE val) {
       this->publish_state("Not available");
       break;
     default:
-      ESP_LOGW(TAG, "[%s] Unknown device error (%u).", this->parent_->address_str().c_str(), (u_int8_t) val);
+      ESP_LOGW(TAG, "[%s] Unknown device error (%u).", this->parent_->address_str(), (u_int8_t) val);
       this->publish_state(to_string((u_int8_t) val));
       break;
   }

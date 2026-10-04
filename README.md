@@ -60,6 +60,8 @@ When connected to the device via VictronConnect App no Instant readout (Bluetoot
 
 See [victron_ble.yaml](/victron_ble.yaml) for a full example.
 
+Requires ESPHome 2026.8.0 or newer (uses the platform-neutral `ble_device_base` BLE layer). If you previously set `esp32_ble_id:` on a `victron_ble` entry, rename it to `ble_hub_id:`; the old key still works but logs a deprecation warning.
+
 ```yaml
 esphome:
   name: "victron-ble"

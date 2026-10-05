@@ -68,7 +68,7 @@ jobs:
             platformio-${{ matrix.esphome }}-${{ hashFiles(matrix.file) }}-
 
       - name: Validate config
-        run: esphome config ${{ matrix.file }} > /dev/null
+        run: esphome config ${{ matrix.file }}
 
       - name: Compile
         run: esphome compile ${{ matrix.file }}
